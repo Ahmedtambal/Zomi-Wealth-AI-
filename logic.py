@@ -18,18 +18,18 @@ from docx import Document
 from docx.shared import Pt, Inches
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 import os
+from openai import OpenAI
 
 
-# Get the API key from environment variable
-# Replace the existing API key line with:
+# At the top of your file with other imports
+# Initialize client once at the module level
 try:
     import streamlit as st
-    openai.api_key = st.secrets.openai.api_key
-except (AttributeError, ModuleNotFoundError, FileNotFoundError):
-    # Fallback for non-Streamlit environments
+    client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+except (AttributeError, ModuleNotFoundError):
     import os
-    openai.api_key = os.getenv("OPENAI_API_KEY", "")
-    if not openai.api_key:
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY", ""))
+    if not client.api_key:
         raise ValueError("OpenAI API key not found in environment variables or Streamlit secrets")
 
 UPLOAD_FOLDER = "uploaded_docs"  # Ensure it's defined globally
