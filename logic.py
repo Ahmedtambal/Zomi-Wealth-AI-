@@ -12,7 +12,7 @@ import pytesseract
 from PIL import Image
 from docx.shared import Pt, Inches, RGBColor
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT, WD_LINE_SPACING
-
+import platform
 import json
 from docx import Document
 from docx.shared import Pt, Inches
@@ -36,8 +36,13 @@ UPLOAD_FOLDER = "uploaded_docs"  # Ensure it's defined globally
 
 
 # Specify the full path to Tesseract executable if not in PATH
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+# Add this at the top of your file (after imports):
 
+# Set Tesseract path based on OS
+if platform.system() == 'Windows':
+    pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+else:  # For Linux (Streamlit Cloud) and macOS
+    pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
 
 def clean_json_response(response_content: str) -> str:
     """Clean GPT response containing JSON data"""
