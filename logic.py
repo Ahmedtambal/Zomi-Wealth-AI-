@@ -214,11 +214,12 @@ def extract_client_details_with_gpt(factfinding_text):
     """
     
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{"role": "user", "content": prompt}],
             temperature=0
         )
+        
         raw_content = response["choices"][0]["message"]["content"]
         cleaned_content = clean_json_response(raw_content)
         return parse_json_response(cleaned_content, "client details extraction")
@@ -304,7 +305,7 @@ def generate_current_situation(factfinding_text):
     2. Includes sufficient detail to make the section comprehensive and professional.
     3. Avoids mentioning specific details about thier invstment knowledge and experience.
     """
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}],
         temperature=0
@@ -364,7 +365,7 @@ def generate_priorities_and_objectives(factfinding_text):
     2. Includes sufficient personalization based on the Objectives table and other relevant details.
     3. Avoids unnecessary repetition or vague statements.
     """
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}],
         temperature=0
@@ -395,7 +396,7 @@ def extract_details_with_gpt(extracted_text):
     """
     
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{"role": "user", "content": prompt}],
             temperature=0
@@ -435,7 +436,7 @@ def extract_plan_details_with_gpt(extracted_text):
     """
     
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{"role": "user", "content": prompt}],
             temperature=0
@@ -510,7 +511,7 @@ Ensure all responses adhere to these conventions.
     - Includes sufficient detail to make the section comprehensive and professional.
     """
 
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}],
         temperature=0
@@ -589,7 +590,7 @@ def generate_safe_withdrawal_rate_section(plan_report_text):
 
     try:
         # Make a call to the OpenAI API
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": "You are a financial advisor assistant."},
@@ -655,7 +656,7 @@ def extract_fund_performance_with_gpt(extracted_text):
     """
 
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{"role": "user", "content": prompt}],
             temperature=0
@@ -725,7 +726,7 @@ def extract_dark_star_performance_with_gpt(extracted_text):
     {extracted_text}
     """
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{"role": "user", "content": prompt}],
             temperature=0,
@@ -766,7 +767,7 @@ def extract_sap_comparison_with_gpt(extracted_text):
     Ensure that the extracted age matches the age mentioned in the heading (e.g., "Comparison at Age 80") and that the table is correctly formatted.
     """
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{"role": "user", "content": prompt}],
             temperature=0,
@@ -832,7 +833,7 @@ def extract_annuity_quotes_with_gpt(extracted_text):
         Text to Analyze:
     {extracted_text}
     """
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}],
         temperature=0,
@@ -927,7 +928,7 @@ ProfitShare % = [Value]% (£[Value])
 - No explanations. Only the template.
     """
 
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}],
         temperature=0,
@@ -1177,7 +1178,7 @@ Return only bullet points with short sentences, formatted as follows:
     try:
         
         
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{"role": "user", "content": prompt}],
             temperature=0,
