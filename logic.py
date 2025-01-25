@@ -1,5 +1,4 @@
-from turtle import st
-import openai
+import streamlit as st  # ✅ Correct importimport openai
 from docx import Document
 from datetime import datetime
 import pdfplumber
@@ -22,7 +21,17 @@ import os
 
 
 # Get the API key from environment variable
-openai.api_key=""
+# Replace the existing API key line with:
+try:
+    import streamlit as st
+    openai.api_key = st.secrets.openai.api_key
+except (AttributeError, ModuleNotFoundError, FileNotFoundError):
+    # Fallback for non-Streamlit environments
+    import os
+    openai.api_key = os.getenv("OPENAI_API_KEY", "")
+    if not openai.api_key:
+        raise ValueError("OpenAI API key not found in environment variables or Streamlit secrets")
+
 UPLOAD_FOLDER = "uploaded_docs"  # Ensure it's defined globally
 
 
