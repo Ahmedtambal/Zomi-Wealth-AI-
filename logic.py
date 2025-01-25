@@ -220,7 +220,7 @@ def extract_client_details_with_gpt(factfinding_text):
             temperature=0
         )
         
-        raw_content = response["choices"][0]["message"]["content"]
+        raw_content = response.choices[0].message.content
         cleaned_content = clean_json_response(raw_content)
         return parse_json_response(cleaned_content, "client details extraction")
     except Exception as e:
@@ -310,7 +310,7 @@ def generate_current_situation(factfinding_text):
         messages=[{"role": "user", "content": prompt}],
         temperature=0
     )
-    return response["choices"][0]["message"]["content"]
+    return response.choices[0].message.content
 
 
 def generate_priorities_and_objectives(factfinding_text):
@@ -370,7 +370,7 @@ def generate_priorities_and_objectives(factfinding_text):
         messages=[{"role": "user", "content": prompt}],
         temperature=0
     )
-    return response["choices"][0]["message"]["content"]
+    return response.choices[0].message.content
 
 
 def extract_details_with_gpt(extracted_text):
@@ -401,7 +401,7 @@ def extract_details_with_gpt(extracted_text):
             messages=[{"role": "user", "content": prompt}],
             temperature=0
         )
-        raw_content = response["choices"][0]["message"]["content"]
+        raw_content = response.choices[0].message.content
         cleaned_content = clean_json_response(raw_content)
         return parse_json_response(cleaned_content, "risk details extraction")
     except Exception as e:
@@ -441,7 +441,7 @@ def extract_plan_details_with_gpt(extracted_text):
             messages=[{"role": "user", "content": prompt}],
             temperature=0
         )
-        raw_content = response["choices"][0]["message"]["content"]
+        raw_content = response.choices[0].message.content
         cleaned_content = clean_json_response(raw_content)
         return parse_json_response(cleaned_content, "plan details extraction")
     except Exception as e:
@@ -516,7 +516,7 @@ Ensure all responses adhere to these conventions.
         messages=[{"role": "user", "content": prompt}],
         temperature=0
     )
-    return response["choices"][0]["message"]["content"]    
+    return response.choices[0].message.content   
     
 def generate_safe_withdrawal_rate_section(plan_report_text):
     """
@@ -604,7 +604,7 @@ def generate_safe_withdrawal_rate_section(plan_report_text):
         )
 
         # Extract the response text
-        generated_text = response.choices[0].message['content'].strip()
+        generated_text = response.choices[0].message.content.strip()
 
         if generated_text == "No withdrawals detected.":
             return ""  # No SWR section needed
@@ -663,7 +663,7 @@ def extract_fund_performance_with_gpt(extracted_text):
         )
         
         # Get and clean response
-        raw_content = response["choices"][0]["message"]["content"]
+        raw_content = response.choices[0].message.content
         cleaned_content = raw_content.strip().replace('```json', '').replace('```', '')
         
         return json.loads(cleaned_content)
@@ -731,7 +731,7 @@ def extract_dark_star_performance_with_gpt(extracted_text):
             messages=[{"role": "user", "content": prompt}],
             temperature=0,
         )
-        raw_content = response["choices"][0]["message"]["content"]
+        raw_content = response.choices[0].message.content
         
         # Add cleaning
         cleaned_content = re.sub(r'^```json\s*|\s*```$', '', raw_content, flags=re.DOTALL)
@@ -772,7 +772,7 @@ def extract_sap_comparison_with_gpt(extracted_text):
             messages=[{"role": "user", "content": prompt}],
             temperature=0,
         )
-        raw_content = response["choices"][0]["message"]["content"]
+        raw_content = response.choices[0].message.content
         
         # Add cleaning
         cleaned_content = re.sub(r'^```json\s*|\s*```$', '', raw_content, flags=re.DOTALL)
@@ -839,7 +839,7 @@ def extract_annuity_quotes_with_gpt(extracted_text):
         temperature=0,
     )
     # Return the formatted plain text output
-    return response["choices"][0]["message"]["content"]
+    return response.choices[0].message.content
 
 
 def extract_fund_comparison_with_gpt(fund1_text, fund2_file1_text, fund2_file2_text):
@@ -933,7 +933,7 @@ ProfitShare % = [Value]% (£[Value])
         messages=[{"role": "user", "content": prompt}],
         temperature=0,
     )
-    return response["choices"][0]["message"]["content"]
+    return response.choices[0].message.content
         
                         
                             
@@ -1183,7 +1183,7 @@ Return only bullet points with short sentences, formatted as follows:
             messages=[{"role": "user", "content": prompt}],
             temperature=0,
         )
-        bullet_points = response["choices"][0]["message"]["content"].strip()
+        bullet_points = response.choices[0].message.content.strip()
         return bullet_points  # Return as text string
     except Exception as e:
         raise RuntimeError("Error extracting IHT details as bullet points: " + repr(e))
