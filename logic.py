@@ -1328,25 +1328,43 @@ def create_new_document(template_path, factfinding_text, risk_details, table_dat
     """
     pension_review_section = generate_pension_review_section(product_report_text)
     swr_section = generate_safe_withdrawal_rate_section(plan_report_text)
-    ''''
+    
     age = sap_comparison_table.get("Age", "N/A")  # Default to "N/A" if Age is not found
-# Extract middle value for text generation
-    middle_value_str = sap_comparison_table["Table"]["Rate of Return Required from P1"][1]  # Second column
     try:
-        middle_value = float(middle_value_str.replace('%', '').strip())
-    except ValueError:
-        raise ValueError(f"Invalid middle value extracted: {middle_value_str}")
-    
-    
+        # Get the middle value from "Effect on Fund if Moved to P1"
+        effect_values = sap_comparison_table["Table"]["Effect on Fund if Moved to P1"]
+        if len(effect_values) != 3:
+            raise ValueError("Effect on Fund array should contain exactly 3 values")
+            
+        middle_value_str = effect_values[1]  # Second item (index 1)
+        middle_value = float(middle_value_str.strip('%').strip())
+        
+    except (KeyError, IndexError, ValueError) as e:
+        raise ValueError(f"Error processing SAP comparison data: {str(e)}")
 
-    # Determine the text based on the value
     if middle_value < 0.0:
-        below_table_text = f"The critical yield required to match the benefits of your current scheme is {middle_value_str}, indicating that the proposed arrangement would need less performance of {middle_value_str} per annum to make up the costs of transferring. This is because the proposed arrangement is more cost-effective than your current arrangement."
+        below_table_text = (
+            f"The critical yield required to match the benefits of your current scheme at age {age} "
+            f"is {middle_value_str}, indicating that the proposed arrangement would need less performance "
+            f"of {middle_value_str} per annum to make up the costs of transferring. This is because the "
+            "proposed arrangement is more cost-effective than your current arrangement."
+        )
     elif 0.0 <= middle_value < 3.0:
-        below_table_text = f"The critical yield required to match the benefits of your current scheme is {middle_value_str}, indicating that the proposed arrangement would need an additional fund performance of {middle_value_str} per annum to make up the costs of transferring.\n\nI believe the chosen fund will be able to achieve this over the long term, although this is not guaranteed."
-    else:  # middle_value >= 3.0
-        below_table_text = f"The critical yield required to match the benefits of your current scheme is {middle_value_str}, indicating that the proposed arrangement would need an additional performance of {middle_value_str} per annum to make up the costs of transferring.\n\nI can not guarantee that the recommended fund can match the additional performance required to make up the costs of transferring, but I still believe that transferring out is in your best interests. Performance is only one consideration to make when transferring out."
-'''
+        below_table_text = (
+            f"The critical yield required to match the benefits of your current scheme at age {age} "
+            f"is {middle_value_str}, indicating that the proposed arrangement would need an additional "
+            f"fund performance of {middle_value_str} per annum to make up the costs of transferring.\n\n"
+            "I believe the chosen fund will be able to achieve this over the long term, "
+            "although this is not guaranteed.")
+    else:  # NEW: Handle values ≥3.0%
+        below_table_text = (
+            f"The critical yield required to match the benefits of your current scheme at age {age} "
+            f"is {middle_value_str}, indicating that the proposed arrangement would need an additional "
+            f"performance of {middle_value_str} per annum to make up the costs of transferring.\n\n"
+            "I can not guarantee that the recommended fund can match the additional performance required "
+            "to make up the costs of transferring, but I still believe that transferring out is in your "
+            "best interests. Performance is only one consideration to make when transferring out."
+        )
     # Load the template
     original_doc = Document(template_path)
     new_doc = Document()
@@ -1412,6 +1430,8 @@ def create_new_document(template_path, factfinding_text, risk_details, table_dat
                 # Handle placeholders
         # Handle the {table3-1} placeholder for SAP comparison
         if "{table3-1}" in text:
+            text = text.replace("{table3-1}", "")
+
             heading = f"Comparison at Age {sap_comparison_table.get('Age', 'N/A')}"
             paragraph_before_table = (
                 f"The table below shows the projected value of your pensions at the age of "
@@ -1422,9 +1442,10 @@ def create_new_document(template_path, factfinding_text, risk_details, table_dat
             new_doc.add_paragraph(paragraph_before_table)
             create_comparison_table(new_doc, sap_comparison_table)
             new_doc.add_paragraph("")  # Add an empty paragraph to create a blank line
-            ''' new_doc.add_paragraph(below_table_text)'''  # Add the generated text below the table
+            new_doc.add_paragraph(below_table_text)  # Add the generated text below the table
+            new_paragraph = new_doc.add_paragraph(text)
 
-            continue
+            
 
         if "{Annuity_Quotes}" in text:
                     if annuity_quotes_text:
